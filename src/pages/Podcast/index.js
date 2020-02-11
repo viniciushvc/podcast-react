@@ -15,8 +15,6 @@ export default function Podcast(props) {
 
   const [episodes, setEpisodes] = useState([])
 
-  const [error, setError] = useState()
-
   useEffect(() => {
     async function getData() {
       const { data } = await api.get('/lookup', {
