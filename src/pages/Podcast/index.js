@@ -1,31 +1,71 @@
 import React, { useState, useEffect } from 'react'
 
-import { lookup } from '../../services/api'
+import api from '../../services/api'
+
+import parser from '../../util/parser'
 
 import { Container } from '../../components'
+
+import * as S from './styled'
 
 export default function Podcast(props) {
   const { id } = props.match.params
 
-  const [podcast, setPodcast] = useState({})
+  const [podcast, setPodcast] = useState()
+
+  const [episodes, setEpisodes] = useState([])
+
+  const [error, setError] = useState()
 
   useEffect(() => {
     async function getData() {
-      const { data } = await lookup.get('', { params: { id: id } })
+      const { data } = await api.get('/lookup', {
+        params: {
+          entity: 'podcast',
+          id: id,
+        },
+      })
 
-      setPodcast(data.results)
+      setPodcast(data.results[0])
     }
 
     getData()
   }, [id])
 
+  useEffect(() => {
+    ;(async () => {
+      if (podcast) {
+        const feed = await parser.parseURL(podcast?.feedUrl)
+
+        setEpisodes(feed.items)
+      }
+    })()
+  }, [podcast])
+
   return (
     <Container>
-      {podcast.artworkUrl600 && (
-        <img src={podcast.artworkUrl600} alt="Podcast logo" />
-      )}
+      <S.PodcastImageWrapper>
+        <S.PodcastImage src={podcast?.artworkUrl600} alt="Podcast logo" />
+      </S.PodcastImageWrapper>
 
-      <h1>{podcast.kind}</h1>
+      <h1>{podcast?.trackName}</h1>
+
+      <ul>
+        {episodes?.map(episode => (
+          <li key={episode.title}>
+            <div>
+              <p>{episode.title}</p>
+
+              <audio controls>
+                <source src={episode.enclosure.url} />
+              </audio>
+            </div>
+
+            <br />
+            <br />
+          </li>
+        ))}
+      </ul>
     </Container>
   )
 }

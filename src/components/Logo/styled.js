@@ -1,10 +1,9 @@
 import styled from 'styled-components'
+
 import { Link } from 'react-router-dom'
 
 export const LogoWrapper = styled.div`
-  max-width: 900px;
-  padding: 0 15px;
-  margin: 0 auto;
+  margin-bottom: 20px;
 `
 
 export const LogoLink = styled(Link)`
