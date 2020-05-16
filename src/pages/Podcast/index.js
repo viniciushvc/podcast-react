@@ -31,13 +31,17 @@ export default function Podcast(props) {
   }, [id])
 
   useEffect(() => {
-    ;(async () => {
+    async function getData() {
       if (podcast) {
-        const feed = await parser.parseURL(podcast?.feedUrl)
+        const feed = await parser.parseURL(
+          'https://cors-anywhere.herokuapp.com/' + podcast?.feedUrl
+        )
 
         setEpisodes(feed.items)
       }
-    })()
+    }
+
+    getData()
   }, [podcast])
 
   return (
@@ -49,13 +53,13 @@ export default function Podcast(props) {
       <h1>{podcast?.trackName}</h1>
 
       <ul>
-        {episodes?.map(episode => (
+        {episodes?.map((episode) => (
           <li key={episode.title}>
             <div>
               <p>{episode.title}</p>
 
               <audio controls>
-                <source src={episode.enclosure.url} />
+                {/* <source src={episode.enclosure.url} /> */}
               </audio>
             </div>
 

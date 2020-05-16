@@ -2,13 +2,11 @@ import React from 'react'
 
 import * as S from './styled'
 
-export default function PodcastList({ results, podcasts }) {
+export default function PodcastList({ podcasts }) {
   return (
     <S.ContainerWrapper>
-      {results > 0 && <S.ResultTitle>Total results: {results}</S.ResultTitle>}
-
       <S.CardList>
-        {podcasts?.map(podcast => (
+        {podcasts?.map((podcast) => (
           <S.CardItem key={podcast.trackId}>
             <S.CardLink to={`/podcast/${podcast.trackId}`}>
               <S.CardImage
