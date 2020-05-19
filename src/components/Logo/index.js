@@ -4,7 +4,7 @@ import { Container } from '../'
 
 import * as S from './styled'
 
-export default function Logo() {
+export default function () {
   return (
     <Container>
       <S.LogoWrapper>

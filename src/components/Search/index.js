@@ -2,14 +2,10 @@ import React from 'react'
 
 import * as S from './styled'
 
-export default function PodcastList({ onSubmit, onChange }) {
+export default function ({ onSubmit, onChange }) {
   return (
     <S.InputWrapper onSubmit={onSubmit}>
-      <S.Input
-        type="text"
-        onChange={onChange}
-        placeholder="Type something...."
-      />
+      <S.Input type="text" onChange={onChange} placeholder="Podcast name" />
     </S.InputWrapper>
   )
 }

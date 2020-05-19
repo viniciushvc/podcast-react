@@ -2,7 +2,7 @@ import React from 'react'
 
 import * as S from './styled'
 
-export default function PodcastList({ podcasts }) {
+export default function ({ podcasts }) {
   return (
     <S.ContainerWrapper>
       <S.CardList>

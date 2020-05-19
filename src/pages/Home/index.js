@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+
+import { Container, Podcasts, Hero } from '../../components'
 
 import api from '../../services/api'
 
-import { Container, PodcastList, Search } from '../../components'
-
-export default function Home() {
-  const [form, setForm] = useState('')
+export default function () {
+  const [form, setForm] = useState('nerdcast')
 
   const [podcasts, setPodcasts] = useState([])
 
@@ -20,6 +20,10 @@ export default function Home() {
     setPodcasts(data.results)
   }
 
+  useEffect(() => {
+    getData()
+  }, [])
+
   function onSubmit(e) {
     e.preventDefault()
 
@@ -27,10 +31,12 @@ export default function Home() {
   }
 
   return (
-    <Container>
-      <Search onSubmit={onSubmit} onChange={(e) => setForm(e.target.value)} />
+    <div>
+      <Hero onSubmit={onSubmit} onChange={(e) => setForm(e.target.value)} />
 
-      <PodcastList podcasts={podcasts} />
-    </Container>
+      <Container>
+        <Podcasts podcasts={podcasts} />
+      </Container>
+    </div>
   )
 }
