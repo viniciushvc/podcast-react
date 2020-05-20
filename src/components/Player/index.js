@@ -4,10 +4,13 @@ import { Container } from '../'
 
 import * as S from './styled'
 
-export default function () {
+export default function ({
+  src = 'https://nerdcast.jovemnerd.com.br/nerdcast_725_esports.mp3',
+}) {
   const [player, setPlayer] = useState({
     is_playing: false,
     progress: 0,
+    playbackRate: 1,
     speed_mode: 1,
   })
 
@@ -24,58 +27,69 @@ export default function () {
   }
 
   function changeSpeed(value) {
-    _player.playbackRate = value
+    if (value === 'fast') {
+      if (_player.playbackRate < 3) _player.playbackRate += 0.5
+    } else {
+      if (_player.playbackRate > 0.5) _player.playbackRate -= 0.5
+    }
 
-    setPlayer({ ...player, speed_mode: value })
+    console.log(_player.currentTime)
+
+    setPlayer({ ...player, speed_mode: _player.playbackRate })
   }
 
-  function volumeUp() {
-    if (_player.volume < 1) {
-      _player.volume += 0.1
-
-      setPlayer({ ...player, speed_mode: _player.volume })
+  function changeTime(value) {
+    if (value === 'backwards') {
+      _player.currentTime -= 30
+    } else if ('forward') {
+      _player.currentTime += 30
+    } else {
+      _player.currentTime = value
     }
   }
 
-  function volumeDown() {
-    if (_player.volume > 0.1) {
-      _player.volume -= 0.1
+  function slideVolume(value) {
+    _player.volume = value / 100
 
-      setPlayer({ ...player, speed_mode: _player.volume })
-    }
+    setPlayer({ ...player, playbackRate: _player.volume })
   }
 
   return (
     <S.PlayerWrapper>
       <Container>
-        <button type="button">Backwards 30</button>
+        <button type="button" onClick={() => changeTime('backwards')}>
+          Backwards 30
+        </button>
         <button type="button" onClick={togglePlay}>
-          Play
+          {player.is_playing ? 'Pause' : 'Play'}
         </button>
-        <button type="button">Forward 30</button>
-        speed
-        <button type="button" onClick={() => changeSpeed(0.5)}>
-          .5
+        <button type="button" onClick={() => changeTime('forward')}>
+          Forward 30
         </button>
-        <button type="button" onClick={() => changeSpeed(1)}>
-          1
-        </button>
-        <button type="button" onClick={() => changeSpeed(1.5)}>
-          1.5
-        </button>
-        <button type="button" onClick={() => changeSpeed(2)}>
-          2
-        </button>
-        volume
-        <button type="button" onClick={() => volumeDown()}>
+        <button type="button" onClick={() => changeSpeed('slow')}>
           -
         </button>
-        <button type="button" onClick={() => volumeUp()}>
+        speed: {player.speed_mode}
+        <button type="button" onClick={() => changeSpeed('fast')}>
           +
         </button>
+        time
+        <input
+          type="range"
+          min="1"
+          max="100"
+          onChange={(e, b) => changeTime(e.target.value)}
+        />
+        volume
+        <input
+          type="range"
+          min="1"
+          max="100"
+          onChange={(e, b) => slideVolume(e.target.value)}
+        />
         <div style={{ width: player.progress * 100 + '%' }}></div>
         <audio ref={(ref) => (_player = ref)}>
-          <source src="https://nerdcast.jovemnerd.com.br/nerdcast_725_esports.mp3" />
+          <source src={src} />
         </audio>
       </Container>
     </S.PlayerWrapper>

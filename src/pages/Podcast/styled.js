@@ -1,22 +1,38 @@
 import styled from 'styled-components'
 
-export const PodcastWrapper = styled.div`
+export const PodcastWrapper = styled.section`
+  margin-top: 20px;
+`
+
+export const FlexWrapper = styled.div`
   display: flex;
-  padding: 30px 0 15px 0;
 `
 
 export const ImageWrapper = styled.div`
   max-width: 400px;
 `
 
-export const Image = styled.img`
-  width: 150px;
-  height: 150px;
-  border-radius: 5px;
-  background-size: cover;
-`
-
 export const InfoWrapper = styled.div`
   width: 100%;
   padding-left: 30px;
+
+  h1 {
+    font-size: 35px;
+    font-weight: 800;
+  }
+
+  h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  a {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--secondaryColor);
+  }
+
+  hr {
+    margin-top: 10px;
+  }
 `

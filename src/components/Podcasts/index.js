@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { LazyImage } from '../'
+
 import * as S from './styled'
 
 export default function ({ podcasts }) {
@@ -9,9 +11,10 @@ export default function ({ podcasts }) {
         {podcasts?.map((podcast) => (
           <S.CardItem key={podcast.trackId}>
             <S.CardLink to={`/podcast/${podcast.trackId}`}>
-              <S.CardImage
+              <LazyImage
                 src={podcast.artworkUrl100}
                 alt={podcast.trackName}
+                rounded
               />
               <S.CardTitle>{podcast.collectionName}</S.CardTitle>
             </S.CardLink>

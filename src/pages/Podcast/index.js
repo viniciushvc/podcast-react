@@ -6,7 +6,7 @@ import api from '../../services/api'
 
 import parser from '../../util/parser'
 
-import { Container } from '../../components'
+import { Container, LazyImage, SearchEpisodes } from '../../components'
 
 import * as S from './styled'
 
@@ -49,55 +49,74 @@ export default function () {
   return (
     <Container>
       <S.PodcastWrapper>
-        <S.ImageWrapper>
-          <S.Image src={podcast?.artworkUrl600} alt="Podcast logo" />
-        </S.ImageWrapper>
+        <S.FlexWrapper>
+          <S.ImageWrapper>
+            <LazyImage
+              src={podcast?.artworkUrl600}
+              alt="Podcast logo"
+              width="120px"
+              height="120px"
+              rounded
+            />
+          </S.ImageWrapper>
 
-        <S.InfoWrapper>
-          <h1>{podcast?.trackName}</h1>
+          <S.InfoWrapper>
+            <h1>{podcast?.trackName}</h1>
 
-          <p>{podcast?.genres.join(', ')}</p>
+            <h2>{podcast?.genres.join(', ')}</h2>
 
-          <p> {podcast?.collectionViewUrl}</p>
+            <a href={podcast?.collectionViewUrl}>
+              {podcast?.collectionViewUrl}
+            </a>
 
-          <p>{podcast?.feedUrl}</p>
+            <a
+              href={podcast?.feedUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {podcast?.feedUrl}
+            </a>
+          </S.InfoWrapper>
+        </S.FlexWrapper>
 
-          <p>Total de episódios: {episodes?.length}</p>
+        <SearchEpisodes />
 
-          <button>Compartilhar</button>
-        </S.InfoWrapper>
+        <ul>
+          {episodes?.map((episode) => (
+            <li key={episode.title}>
+              <S.FlexWrapper>
+                <LazyImage
+                  src={episode.itunes.image}
+                  alt=""
+                  width="120px"
+                  height="120px"
+                  rounded
+                />
+
+                <S.InfoWrapper>
+                  <p>data: {new Date(episode.isoDate).toLocaleDateString()}</p>
+
+                  <p>sobre: {episode.content}</p>
+
+                  <p>link: {episode.link}</p>
+
+                  <p>{episode.title}</p>
+
+                  <button
+                    type="button"
+                    onClick={() => console.log(episode.enclosure.url)}
+                  >
+                    play
+                  </button>
+                </S.InfoWrapper>
+              </S.FlexWrapper>
+
+              <br />
+              <br />
+            </li>
+          ))}
+        </ul>
       </S.PodcastWrapper>
-
-      <hr />
-
-      <h1>Episodes</h1>
-
-      <input type="text" placeholder="Find episode" />
-
-      <ul>
-        {episodes?.map((episode) => (
-          <li key={episode.title}>
-            <div>
-              <S.Image src={episode.itunes.image} alt="" />
-
-              <p>data: {new Date(episode.isoDate).toLocaleDateString()}</p>
-
-              <p>sobre: {episode.content}</p>
-
-              <p>link: {episode.link}</p>
-
-              <p>{episode.title}</p>
-
-              <audio controls>
-                {/* <source src={episode.enclosure.url} /> */}
-              </audio>
-            </div>
-
-            <br />
-            <br />
-          </li>
-        ))}
-      </ul>
     </Container>
   )
 }
