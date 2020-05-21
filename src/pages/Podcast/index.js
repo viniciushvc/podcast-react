@@ -6,16 +6,18 @@ import api from '../../services/api'
 
 import parser from '../../util/parser'
 
-import { Container, LazyImage, SearchEpisodes } from '../../components'
+import { SearchEpisodes, Episodes } from '../../components/pages'
+
+import { Container, LazyImage } from '../../components/utils'
 
 import * as S from './styled'
 
 export default function () {
   const { id } = useParams()
-
   const [podcast, setPodcast] = useState()
-
   const [episodes, setEpisodes] = useState([])
+  const [filteredEpisodes, setFilteredEpisodes] = useState([])
+  const [filter, setFilter] = useState()
 
   useEffect(() => {
     async function getData() {
@@ -40,22 +42,45 @@ export default function () {
         )
 
         setEpisodes(feed.items)
+        setFilteredEpisodes(feed.items)
       }
     }
 
     getData()
   }, [podcast])
 
+  function playEpisode(id) {
+    const episode = filteredEpisodes.map((item, i) => {
+      if (i === id) {
+        if (!item.active) return { ...item, active: true }
+      }
+
+      return { ...item, active: false }
+    })
+
+    setFilteredEpisodes(episode)
+  }
+
+  function filterEpisode(e) {
+    e.preventDefault()
+
+    const temp = episodes.filter((item) =>
+      item.title.toLowerCase().includes(filter.toLowerCase())
+    )
+
+    setFilteredEpisodes(temp)
+  }
+
   return (
     <Container>
       <S.PodcastWrapper>
-        <S.FlexWrapper>
+        <S.FlexWrapper align="flex-end">
           <S.ImageWrapper>
             <LazyImage
               src={podcast?.artworkUrl600}
-              alt="Podcast logo"
-              width="120px"
-              height="120px"
+              alt={`${podcast?.trackName} logo`}
+              width="150px"
+              height="150px"
               rounded
             />
           </S.ImageWrapper>
@@ -64,58 +89,16 @@ export default function () {
             <h1>{podcast?.trackName}</h1>
 
             <h2>{podcast?.genres.join(', ')}</h2>
-
-            <a href={podcast?.collectionViewUrl}>
-              {podcast?.collectionViewUrl}
-            </a>
-
-            <a
-              href={podcast?.feedUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {podcast?.feedUrl}
-            </a>
           </S.InfoWrapper>
         </S.FlexWrapper>
 
-        <SearchEpisodes />
+        <SearchEpisodes
+          onSubmit={(e) => filterEpisode(e)}
+          onChange={(e) => setFilter(e.target.value)}
+          episodes={episodes.length}
+        />
 
-        <ul>
-          {episodes?.map((episode) => (
-            <li key={episode.title}>
-              <S.FlexWrapper>
-                <LazyImage
-                  src={episode.itunes.image}
-                  alt=""
-                  width="120px"
-                  height="120px"
-                  rounded
-                />
-
-                <S.InfoWrapper>
-                  <p>data: {new Date(episode.isoDate).toLocaleDateString()}</p>
-
-                  <p>sobre: {episode.content}</p>
-
-                  <p>link: {episode.link}</p>
-
-                  <p>{episode.title}</p>
-
-                  <button
-                    type="button"
-                    onClick={() => console.log(episode.enclosure.url)}
-                  >
-                    play
-                  </button>
-                </S.InfoWrapper>
-              </S.FlexWrapper>
-
-              <br />
-              <br />
-            </li>
-          ))}
-        </ul>
+        <Episodes episodes={filteredEpisodes} onPlay={(e) => playEpisode(e)} />
       </S.PodcastWrapper>
     </Container>
   )

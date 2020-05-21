@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 
-import { Container, Podcasts, Hero } from '../../components'
+import { Container } from '../../components/utils'
+
+import { Podcasts, Hero } from '../../components/pages'
 
 import api from '../../services/api'
 

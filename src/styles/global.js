@@ -57,7 +57,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: 'Lato', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
     background-color: var(--secondaryBackground);
     color: var(--primaryColor);
   }
@@ -65,8 +65,8 @@ const GlobalStyle = createGlobalStyle`
   body.dark {
   --primaryColor: #fff;
   --secondaryColor: #03a9f4;
-  --primaryBackground: #0d2538;
-  --secondaryBackground: #0f2d44;
+  --primaryBackground: #040404;
+  --secondaryBackground: #282828;
   --inverseBackground: #fdfdfd;
 }
 body.light {
