@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 
 import { useParams } from 'react-router-dom'
 
-import api from '../../services/api'
+import api from '@/services/api'
 
-import parser from '../../util/parser'
+import parser from '@/util/parser'
 
-import { SearchEpisodes, Episodes } from '../../components/pages'
+import { SearchEpisodes, Episodes } from '@/features/Podcast'
 
-import { Container, LazyImage } from '../../components/utils'
+import { Container, LazyImage } from '@/components/utils'
 
 import * as S from './styled'
 

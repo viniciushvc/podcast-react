@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { LazyImage } from '../../utils'
+import { LazyImage } from '@/components/utils'
 
 import * as S from './styled'
 

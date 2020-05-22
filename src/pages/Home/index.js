@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 
-import { Container } from '../../components/utils'
+import { Container } from '@/components/utils'
 
-import { Podcasts, Hero } from '../../components/pages'
+import { Podcasts, Hero } from '@/features/Home'
 
 import api from '../../services/api'
 

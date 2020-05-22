@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { SearchPodcasts } from '../'
+import { SearchPodcasts } from '@/features/Home'
 
-import { Container } from '../../utils'
+import { Container } from '@/components/utils'
 
 import * as S from './styled'
 
