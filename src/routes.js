@@ -5,7 +5,7 @@ import { Header, Footer, Player } from './components/base'
 
 import { LazyRoute } from './components/utils'
 
-export default function Routes() {
+export default function () {
   return (
     <Router>
       <Header />

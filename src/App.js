@@ -1,17 +1,19 @@
 import React from 'react'
 
+import PlayerContext from '@/contexts/PlayerContext'
+
 import Routes from './routes'
 
 import GlobalStyle from './styles/global'
 
-function App() {
+export default function () {
   return (
     <>
       <GlobalStyle />
 
-      <Routes />
+      <PlayerContext>
+        <Routes />
+      </PlayerContext>
     </>
   )
 }
-
-export default App

@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 
 import { useParams } from 'react-router-dom'
+
+import { PlayerContext } from '@/contexts/PlayerContext'
 
 import api from '@/services/api'
 
@@ -18,6 +20,8 @@ export default function () {
   const [episodes, setEpisodes] = useState([])
   const [filteredEpisodes, setFilteredEpisodes] = useState([])
   const [filter, setFilter] = useState()
+
+  const context = useContext(PlayerContext)
 
   useEffect(() => {
     async function getData() {
@@ -52,6 +56,13 @@ export default function () {
   function playEpisode(id) {
     const episode = filteredEpisodes.map((item, i) => {
       if (i === id) {
+        context.setAudioSource(item.enclosure.url)
+
+        context.setPlayerConfig({
+          ...context.playerConfig,
+          track_name: item.title,
+        })
+
         if (!item.active) return { ...item, active: true }
       }
 

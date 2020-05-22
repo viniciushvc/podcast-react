@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useRef } from 'react'
 
 import {
   BsFillSkipForwardFill,
@@ -9,58 +9,62 @@ import {
   BsDash,
 } from 'react-icons/bs'
 
+import { PlayerContext } from '@/contexts/PlayerContext'
+
 import { Container } from '../../utils'
 
 import * as S from './styled'
 
-export default function ({
-  src = 'https://nerdcast.jovemnerd.com.br/nerdcast_725_esports.mp3',
-}) {
-  const [player, setPlayer] = useState({
-    is_playing: false,
-    progress: 0,
-    playbackRate: 1,
-    speed_mode: 1,
-  })
+export default function () {
+  const { audioSource, playerConfig, setPlayerConfig } = useContext(
+    PlayerContext
+  )
 
-  let _player = React.createRef()
+  let { player } = useContext(PlayerContext)
 
   function togglePlay() {
-    if (player.is_playing) {
-      _player.pause()
+    if (playerConfig.is_playing) {
+      player.pause()
     } else {
-      _player.play()
+      player.play()
     }
 
-    setPlayer({ ...player, is_playing: !player.is_playing })
+    setPlayerConfig({
+      ...playerConfig,
+      is_playing: !playerConfig.is_playing,
+    })
   }
 
   function changeSpeed(value) {
     if (value === 'fast') {
-      if (_player.playbackRate < 3) _player.playbackRate += 0.5
-    } else {
-      if (_player.playbackRate > 0.5) _player.playbackRate -= 0.5
+      if (player.playbackRate < 3) player.playbackRate += 0.5
+    } else if (player.playbackRate > 0.5) {
+      player.playbackRate -= 0.5
     }
 
-    console.log(_player.currentTime)
-
-    setPlayer({ ...player, speed_mode: _player.playbackRate })
+    setPlayerConfig({
+      ...playerConfig,
+      speed_mode: player.playbackRate,
+    })
   }
 
   function changeTime(value) {
     if (value === 'backwards') {
-      _player.currentTime -= 30
-    } else if ('forward') {
-      _player.currentTime += 30
+      player.currentTime -= 30
+    } else if (value === 'forward') {
+      player.currentTime += 30
     } else {
-      _player.currentTime = value
+      player.currentTime = value
     }
   }
 
   function slideVolume(value) {
-    _player.volume = value / 100
+    player.volume = value / 100
 
-    setPlayer({ ...player, playbackRate: _player.volume })
+    setPlayerConfig({
+      ...playerConfig,
+      playbackRate: player.volume,
+    })
   }
 
   return (
@@ -72,7 +76,7 @@ export default function ({
               <BsSkipBackwardFill size="20" />
             </button>
             <button type="button" onClick={togglePlay}>
-              {player.is_playing ? (
+              {playerConfig.is_playing ? (
                 <BsPauseFill size="40" />
               ) : (
                 <BsFillPlayFill size="40" />
@@ -85,9 +89,7 @@ export default function ({
 
           <div className="info-wrapper">
             <div>
-              <span className="title">
-                NerdCast 725 - Profissionais dos eSports
-              </span>
+              <span className="title">{playerConfig.track_name}</span>
 
               <input
                 type="range"
@@ -103,7 +105,7 @@ export default function ({
             <button type="button" onClick={() => changeSpeed('slow')}>
               <BsDash size="40" />
             </button>
-            {player.speed_mode}
+            {playerConfig.speed_mode}
             <button type="button" onClick={() => changeSpeed('fast')}>
               <BsPlus size="40" />
             </button>
@@ -115,9 +117,8 @@ export default function ({
               onChange={(e) => slideVolume(e.target.value)}
             />
           </div>
-          <audio ref={(ref) => (_player = ref)}>
-            <source src={src} />
-          </audio>
+
+          <audio src={audioSource} ref={(ref) => (player = ref)} />
         </S.PlayerFlex>
       </Container>
     </S.PlayerWrapper>
