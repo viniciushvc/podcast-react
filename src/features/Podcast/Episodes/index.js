@@ -34,12 +34,7 @@ function Episodes({ episodes, onPlay, loading }) {
               {new Date(episode.isoDate).toLocaleDateString()}
             </p>
 
-            <button
-              className="actions"
-              title="Share episode"
-              type="button"
-              onClick={() => console.log(episode.enclosure.url)}
-            >
+            <button className="actions" title="Share episode" type="button">
               <BsReplyAll size="20" color="currentColor" />
             </button>
           </S.FlexWrapper>

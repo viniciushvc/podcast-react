@@ -1,44 +1,41 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
-import { Container } from '@/components/utils'
+import { getPodcasts } from '@/rest/podcasts'
 
 import { Podcasts, Hero } from '@/features/Home'
 
-import api from '../../services/api'
+import { Container } from '@/components/utils'
+
+import { Spinner } from '@/components/ui'
 
 export default function () {
-  const [form, setForm] = useState('nerdcast')
-
+  const [form, setForm] = useState()
   const [podcasts, setPodcasts] = useState([])
+  const [loading, setLoading] = useState(false)
 
-  async function getData() {
-    const { data } = await api.get('/search', {
-      params: {
-        entity: 'podcast',
-        term: form,
-      },
-    })
-
-    setPodcasts(data.results)
-  }
-
-  useEffect(() => {
-    getData()
-  }, [])
-
-  function onSubmit(e) {
+  async function getData(e) {
     e.preventDefault()
 
-    getData()
+    try {
+      setLoading(true)
+      const data = await getPodcasts(form)
+      setPodcasts(data)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <div>
-      <Hero onSubmit={onSubmit} onChange={(e) => setForm(e.target.value)} />
+    <>
+      <Hero onSubmit={getData} onChange={(e) => setForm(e.target.value)} />
 
       <Container>
-        <Podcasts podcasts={podcasts} />
+        {loading && <Spinner mt="50px" />}
+
+        {!loading && <Podcasts podcasts={podcasts} />}
       </Container>
-    </div>
+    </>
   )
 }

@@ -4,13 +4,13 @@ import { useParams } from 'react-router-dom'
 
 import { PlayerContext } from '@/contexts/PlayerContext'
 
-import api from '@/services/api'
-
-import parser from '@/util/parser'
+import { getPodcast, getEpisodes } from '@/rest/podcasts'
 
 import { SearchEpisodes, Episodes } from '@/features/Podcast'
 
 import { Container, LazyImage } from '@/components/utils'
+
+import { Spinner } from '@/components/ui'
 
 import * as S from './styled'
 
@@ -18,49 +18,33 @@ export default function () {
   const { id } = useParams()
   const [podcast, setPodcast] = useState()
   const [episodes, setEpisodes] = useState([])
-  const [filteredEpisodes, setFilteredEpisodes] = useState([])
   const [filter, setFilter] = useState()
+  const [loading, setLoading] = useState(true)
 
-  const context = useContext(PlayerContext)
+  const { config, setConfig } = useContext(PlayerContext)
 
   useEffect(() => {
     async function getData() {
-      const { data } = await api.get('/lookup', {
-        params: {
-          entity: 'podcast',
-          id: id,
-        },
-      })
+      const info = await getPodcast(id)
+      setPodcast(info)
 
-      setPodcast(data.results[0])
+      const episodes = await getEpisodes(info.feedUrl)
+      setEpisodes({ original: episodes, filtered: episodes })
+
+      setLoading(false)
     }
 
     getData()
   }, [id])
 
-  useEffect(() => {
-    async function getData() {
-      if (podcast) {
-        const feed = await parser.parseURL(
-          'https://cors-anywhere.herokuapp.com/' + podcast?.feedUrl
-        )
-
-        setEpisodes(feed.items)
-        setFilteredEpisodes(feed.items)
-      }
-    }
-
-    getData()
-  }, [podcast])
-
   function playEpisode(id) {
-    const episode = filteredEpisodes.map((item, i) => {
+    const filtered = episodes.filtered.map((item, i) => {
       if (i === id) {
-        context.setAudioSource(item.enclosure.url)
-
-        context.setPlayerConfig({
-          ...context.playerConfig,
+        setConfig({
+          ...config,
+          is_playing: true,
           track_name: item.title,
+          source: item.enclosure.url,
         })
 
         if (!item.active) return { ...item, active: true }
@@ -69,17 +53,19 @@ export default function () {
       return { ...item, active: false }
     })
 
-    setFilteredEpisodes(episode)
+    setEpisodes({ original: episodes, filtered })
   }
 
   function filterEpisode(e) {
     e.preventDefault()
 
-    const temp = episodes.filter((item) =>
-      item.title.toLowerCase().includes(filter.toLowerCase())
-    )
+    if (filter) {
+      const temp = episodes.original.filter((item) =>
+        item.title.toLowerCase().includes(filter.toLowerCase())
+      )
 
-    setFilteredEpisodes(temp)
+      setEpisodes({ original: episodes, filtered: temp })
+    }
   }
 
   return (
@@ -109,7 +95,14 @@ export default function () {
           episodes={episodes.length}
         />
 
-        <Episodes episodes={filteredEpisodes} onPlay={(e) => playEpisode(e)} />
+        {loading && <Spinner />}
+
+        {!loading && (
+          <Episodes
+            episodes={episodes.filtered}
+            onPlay={(e) => playEpisode(e)}
+          />
+        )}
       </S.PodcastWrapper>
     </Container>
   )
