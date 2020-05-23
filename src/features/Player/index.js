@@ -16,28 +16,28 @@ export default function () {
   const { config } = useContext(PlayerContext)
 
   return (
-    <S.PlayerWrapper>
-      <Container>
-        <S.PlayerFlex>
-          <Action />
+    <>
+      <S.PlayerWrapper hidden={config.source === ''}>
+        <Container>
+          <S.PlayerFlex>
+            <Action />
 
-          <div className="info-wrapper">
-            <div>
+            <div className="info-wrapper">
               <Info />
 
               <Progress />
             </div>
-          </div>
 
-          <div className="add">
-            <Speed />
+            <div className="add">
+              <Speed />
 
-            <Volume />
-          </div>
+              <Volume />
+            </div>
 
-          <audio id="player" src={config.source} />
-        </S.PlayerFlex>
-      </Container>
-    </S.PlayerWrapper>
+            <audio id="player" src={config.source} />
+          </S.PlayerFlex>
+        </Container>
+      </S.PlayerWrapper>
+    </>
   )
 }

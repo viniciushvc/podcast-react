@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 export const PlayerWrapper = styled.div`
+  display: ${(props) => (props.hidden ? 'hidden' : 'block')};
   background-color: var(--primaryBackground);
   padding: 30px;
   position: sticky;

@@ -21,7 +21,7 @@ export default function () {
   const [filter, setFilter] = useState()
   const [loading, setLoading] = useState(true)
 
-  const { config, setConfig } = useContext(PlayerContext)
+  const { changeConfig } = useContext(PlayerContext)
 
   useEffect(() => {
     async function getData() {
@@ -40,12 +40,7 @@ export default function () {
   function playEpisode(id) {
     const filtered = episodes.filtered.map((item, i) => {
       if (i === id) {
-        setConfig({
-          ...config,
-          is_playing: true,
-          track_name: item.title,
-          source: item.enclosure.url,
-        })
+        changeConfig('TRACK', { source: item.enclosure.url, name: item.title })
 
         if (!item.active) return { ...item, active: true }
       }

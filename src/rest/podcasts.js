@@ -1,6 +1,6 @@
 import api from '@/services/api'
 
-import parser from '@/util/parser'
+import parser from '@/utils/parser'
 
 export async function getPodcasts(term) {
   const { data } = await api.get('/search', {

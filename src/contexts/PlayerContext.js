@@ -1,35 +1,41 @@
 import React, { useState, useEffect, createContext } from 'react'
 
+import { DEFAULT_SETTINGS, changeSettings } from '@/utils/player'
+
 export const PlayerContext = createContext()
 
 export default function ({ children }) {
   const player = document.getElementById('player')
 
-  const [config, setConfig] = useState({
-    is_playing: false,
-    progress: 0,
-    playbackRate: 1,
-    speed_mode: 1,
-    track_name: '',
-    duration: 0,
-    currentTime: 0,
-    source: '',
-  })
+  const [config, setConfig] = useState(DEFAULT_SETTINGS)
+
+  function changeConfig(type, value) {
+    const newConfig = changeSettings(type, value, config)
+
+    setConfig(newConfig)
+  }
 
   useEffect(() => {
     if (player) {
-      if (config.source) config.is_playing ? player.play() : player.pause()
+      config.paused && player.pause()
+
+      config.is_playing && player.play()
 
       player.currentTime = config.currentTime
+
+      player.volume = config.volume
+
+      player.playbackRate = config.playbackRate
     }
-  }, [player, config])
+
+    console.log(player, config)
+  }, [config])
 
   return (
     <PlayerContext.Provider
       value={{
         config,
-        setConfig,
-        player,
+        changeConfig,
       }}
     >
       {children}

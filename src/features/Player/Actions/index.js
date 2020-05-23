@@ -10,46 +10,21 @@ import {
 import { PlayerContext } from '@/contexts/PlayerContext'
 
 export default function () {
-  const { config, setConfig } = useContext(PlayerContext)
-
-  let { player } = useContext(PlayerContext)
-
-  function togglePlay() {
-    if (config.is_playing) {
-      player.pause()
-    } else {
-      player.play()
-    }
-
-    setConfig({
-      ...config,
-      is_playing: !config.is_playing,
-    })
-  }
-
-  function changeTime(value) {
-    if (value === 'backwards') {
-      player -= 30
-    } else if (value === 'forward') {
-      player += 30
-    } else {
-      player = value
-    }
-  }
+  const { config, changeConfig } = useContext(PlayerContext)
 
   return (
     <div className="actions">
-      <button type="button" onClick={() => changeTime('backwards')}>
+      <button type="button" onClick={() => changeConfig('TIME', 'backwards')}>
         <BsSkipBackwardFill size="20" />
       </button>
-      <button type="button" onClick={togglePlay}>
+      <button type="button" onClick={() => changeConfig('TOGGLE_PLAY')}>
         {config.is_playing ? (
           <BsPauseFill size="40" />
         ) : (
           <BsFillPlayFill size="40" />
         )}
       </button>
-      <button type="button" onClick={() => changeTime('forward')}>
+      <button type="button" onClick={() => changeConfig('TIME', 'forward')}>
         <BsFillSkipForwardFill size="20" />
       </button>
     </div>

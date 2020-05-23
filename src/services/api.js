@@ -1,7 +1,12 @@
 import axios from 'axios'
 
+const cors =
+  process.env.NODE_ENV === 'development'
+    ? 'https://cors-anywhere.herokuapp.com/'
+    : ''
+
 const instance = axios.create({
-  baseURL: 'https://cors-anywhere.herokuapp.com/https://itunes.apple.com',
+  baseURL: `${cors}https://itunes.apple.com`,
 })
 
 export default instance
